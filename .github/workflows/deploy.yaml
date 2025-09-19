@@ -17,7 +17,7 @@ jobs:
    name: Build
     runs-on: ubuntu-latest
     steps:
-    - id: checkout
+      - id: checkout
        name: Checkout
       - uses: actions/checkout@v4
 
@@ -46,10 +46,10 @@ jobs:
       permissions:
         pages: write
       id-token: write
-    environment:
+      environment:
       name: github-pages
       url: ${{ steps.deploy.outputs.page_url }}
-    steps:
+      steps:
       - id: deploy
         name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
