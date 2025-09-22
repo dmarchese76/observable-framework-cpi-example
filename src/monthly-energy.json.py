@@ -3,7 +3,7 @@ import cpi
 cpi.update()
 
 # Get the standard CPI-U series, seasonally adjusted, so we can compare it month-to-month
-df = cpi.series.get(seasonally_adjusted=True).to_dataframe()
+df = cpi.series.get(seasonally_adjusted=True, items="Energy" ).to_dataframe()
 
 # Filter it down to monthly values, excluding annual averages
 df = df[df.period_type == "monthly"].copy()

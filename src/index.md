@@ -1,4 +1,13 @@
-
+<style>
+body{ 
+  font-family: sans-serif;
+  font-weight: bold
+  
+}
+p{
+  font-weight: normal
+}
+</style>
 ```js
 const monthToMonth = await FileAttachment("month-to-month.json").json({typed: true}).then(data => {
   // Loop through the data and return a polished up, trimmed down version
@@ -11,12 +20,30 @@ const monthToMonth = await FileAttachment("month-to-month.json").json({typed: tr
 });
 ```
 ```js
+const monthToMonthEnergy = await FileAttachment("monthly-energy.json").json({typed: true}).then(data => {
+  // Loop through the data and return a polished up, trimmed down version
+  return data.map(d => {
+    return {
+      month: new Date(d.date),
+      change: d.change
+    }
+  });
+});
+console.log ("Energy", monthToMonthEnergy)
+```
+```js
 const yearOverYear = await FileAttachment("year-over-year.json").json({typed: true}).then(data => {
+  console.log("rawData", data);
+  const nameLookup = {
+    "CUUR0000SA0": "All items",
+    "CUUR0000SA0L1E": "All items except food and energy",
+  }
   return data.map(d => {
     return {
       month: new Date(d.date),
       change: d.change,
-      series_items_name: d.series_items_name
+      series_id: d.series_id,
+      series_items_name: nameLookup[d.series_id],
     }
   });
 });
@@ -53,11 +80,26 @@ const describe = (change) => {
   }
 }
 ```
+```js
+Plot.plot({
+  title: "Seasonally adjusted energy changes",
+  marks: [
+    Plot.barY(monthToMonthEnergy, {
+        x: "month",
+        y: "change",
+        fill: "purple",
+        tip: true
+    })
+  ],
+  x: {label: null},
+  y: {label: "Percent Change", tickFormat: d => `${d}%`}
+})
+```
 
 ```js
-const latestAllItems = yearOverYear.filter(d => d.series_items_name === "All items").at(-1);
-const latestCore = yearOverYear.filter(d => d.series_items_name === "All items less food and energy").at(-1);
-
+const latestAllItems = yearOverYear.filter(d => d.series_id === "CUUR0000SA0").at(-1);
+const latestCore = yearOverYear.filter(d => d.series_id === "CUUR0000SA0L1E").at(-1);
+console.log("yearOveryear", yearOverYear);
 ```
 Over the last 12 months, the all items index ${describe(latestAllItems.change)} before seasonal adjustment. The index for all items less food and energy ${describe(latestCore.change)}
 
