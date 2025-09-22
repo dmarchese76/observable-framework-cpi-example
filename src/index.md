@@ -87,7 +87,7 @@ Plot.plot({
     Plot.barY(monthToMonthEnergy, {
         x: "month",
         y: "change",
-        fill: "purple",
+        fill: "red",
         tip: true
     })
   ],
